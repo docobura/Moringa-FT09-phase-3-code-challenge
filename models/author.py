@@ -6,6 +6,10 @@ class Author:
     @property
     def id(self):
         return self._id
+    
+    @id.setter
+    def id(self, val):
+        self._id = val
 
     @property
     def name(self):
@@ -21,10 +25,12 @@ class Author:
             raise AttributeError("Name cannot be changed after instantiation.")
         self._name = value
 
-    def create_author(self, cursor):
+    @classmethod
+    def create_author(cls, cursor, name):
          # inserting a new author 
-        cursor.execute("INSERT INTO authors (name) VALUES (?)", (self._name,))
-        self._id = cursor.lastrowid
+        cursor.execute("INSERT INTO authors (name) VALUES (?)", (name,))
+        author_id = cursor.lastrowid
+        return cls(author_id, name)
 
     @classmethod
       # getting all authors

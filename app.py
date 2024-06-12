@@ -1,10 +1,14 @@
-from database.setup import create_tables
+from database.setup import create_tables, drop_tables
 from database.connection import get_db_connection
 from models.article import Article
 from models.author import Author
 from models.magazine import Magazine
 
+
 def main():
+
+    #Drop tables first
+    drop_tables()
     # Initialize the database and create tables
     create_tables()
 
@@ -26,16 +30,20 @@ def main():
     '''
 
     # Create an author
-    cursor.execute('INSERT INTO authors (name) VALUES (?)', (author_name,))
-    author_id = cursor.lastrowid # Use this to fetch the id of the newly created author
+    # cursor.execute('INSERT INTO authors (name) VALUES (?)', (author_name,))
+    # author_id = cursor.lastrowid # Use this to fetch the id of the newly created author
+    author = Author.create_author(cursor, author_name)
+    author_id = author.id
 
     # Create a magazine
-    cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (magazine_name, magazine_category))
-    magazine_id = cursor.lastrowid # Use this to fetch the id of the newly created magazine
-
+    # cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (magazine_name, magazine_category))
+    # magazine_id = cursor.lastrowid # Use this to fetch the id of the newly created magazine
+    magazine = Magazine.create_magazine(cursor, magazine_name, magazine_category)
+    magazine_id = magazine.id # Use this to fetch the id of the newly created magazine
     # Create an article
-    cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?, ?, ?, ?)',
-                   (article_title, article_content, author_id, magazine_id))
+    # cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?, ?, ?, ?)',
+    #                (article_title, article_content, author_id, magazine_id))
+    article = Article.create_article(cursor, article_title, article_content, author_id, magazine_id)
 
     conn.commit()
 

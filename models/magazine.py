@@ -30,11 +30,12 @@ class Magazine:
         else:
             raise ValueError("Category must be a non-empty string")
 
-    def create_magazine(self, cursor):
+    @classmethod
+    def create_magazine(cls, cursor, magazine_name, magazine_category):
         # inserting a new magazine
-        cursor.execute("INSERT INTO magazines (name, category) VALUES (?, ?)", (self._name, self._category))
-        self._id = cursor
-        return cursor
+        cursor.execute("INSERT INTO magazines (name, category) VALUES (?, ?)", (magazine_name, magazine_category))
+        magazine_id = cursor.lastrowid
+        return cls(magazine_id, magazine_name, magazine_category)
 
     @classmethod
      # getting all magazines
